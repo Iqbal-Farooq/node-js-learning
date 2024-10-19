@@ -1,0 +1,33 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title #(docTitle)
+        link(rel="stylesheet", href="/css/main.css")
+        link(rel="stylesheet", href="/css/product.css")
+    body 
+        header.main-header 
+         nav.main-header__nav 
+             ul.main-header__item-list 
+                 li.main-header__item 
+                     a.active(href="/") Shop  
+                         li.main-header__item 
+                             a(href="/admin/add-product") Add Product
+        main
+            if prods.length>0                     
+                .grid 
+                    each product in prods
+                        article.crad.product-item 
+                            header.card__header 
+                                h1.product_title #{product.title}
+                            .card__image 
+                                img(src="https://images.theconversation.com/files/45159/original/rptgtpxd-1396254731.jpg?ixlib=rb-4.1.0&q=45&auto=format&w=754&h=502&fit=crop&dpr=1", alt=" A Book")
+                            .card-content 
+                                h2.product__price $19.99
+                                p.product__discription 
+                            .card__actions
+                                button.btn Add To Cart
+            else 
+                h1 No Produt
+

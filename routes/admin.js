@@ -4,7 +4,7 @@ const { title } = require('process')
 const router=express.Router()
 const products=[]
 router.get('/add-product',(req,res,next)=>{
-    res.render('add-product',{pageTitle:"Add New Products",path:'admin/add-product',productCSS:true,formCSS:true})
+    res.render('add-product',{pageTitle:"Add New Products",path:'admin/add-product',productCSS:true,formCSS:true,activeProduct:true})
     // res.sendFile(path.join(__dirname,'..','views','add-product.html'))
 })
 router.post('/add-product',(req,res,next)=>{

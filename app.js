@@ -1,8 +1,9 @@
 const path=require('path')
 const express=require('express')
 const bodyParser=require('body-parser')
-const adminData=require('./routes/admin')
+const adminRoutes=require('./routes/admin')
 const shopRoutes=require('./routes/shop')
+const ErrorController=require('./controllers/404')
 // const expressHbs=require('express-handlebars')
 const app=express();
 // pug engine
@@ -18,12 +19,9 @@ app.set('views','views')
 app.use(bodyParser.urlencoded({extend:false}));
 app.use(express.static(path.join(__dirname,'public')))
 
-app.use('/admin',adminData.routes);
+app.use('/admin',adminRoutes);
 app.use(shopRoutes);
-app.use((req,res,next)=>{
-    res.status(404).render('404',{pagetitle:'Not Found!',pageTitle:"Not Found"})
-    // res.status(404).sendFile(path.join(__dirname,'views','404.html'))
-})
+app.use(ErrorController.get404)
 
 // const server = http.createServer(app);
 // server.listen(3000);

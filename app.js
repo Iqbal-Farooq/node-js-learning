@@ -4,6 +4,7 @@ const bodyParser=require('body-parser')
 const adminRoutes=require('./routes/admin')
 const shopRoutes=require('./routes/shop')
 const ErrorController=require('./controllers/404')
+
 // const expressHbs=require('express-handlebars')
 const app=express();
 // pug engine
@@ -16,6 +17,7 @@ const app=express();
 // EJS
 app.set('view engine','ejs');
 app.set('views','views')
+// db.execute('SELECT * FROM products').then((data)=>console.log('data',data[0])).catch(err=>console.log(err))
 app.use(bodyParser.urlencoded({extend:false}));
 app.use(express.static(path.join(__dirname,'public')))
 
@@ -25,4 +27,4 @@ app.use(ErrorController.get404)
 
 // const server = http.createServer(app);
 // server.listen(3000);
-app.listen(3000)
+app.listen(7000)

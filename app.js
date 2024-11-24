@@ -9,6 +9,8 @@ const Product =require('./models/product')
 const User = require('./models/user')
 const Cart = require('./models/cart')
 const CartItem = require('./models/cart-item')
+const Order =require('./models/order')
+const OrderedItems=require('./models/order-items')
 const app=express();
 
 // EJS
@@ -40,7 +42,10 @@ User.hasOne(Cart)
 Cart.belongsTo(User)
 Cart.belongsToMany(Product,{through:CartItem})
 Product.belongsToMany(Cart,{through:CartItem})
-sequelize.sync({force:true}).then(result => {
+Order.belongsTo(User)
+User.hasMany(Order);
+Order.belongsToMany(Product,{through:OrderedItems})
+sequelize.sync().then(result => {
     return User.findByPk(1);
 }).then(user => {
     if (!user) {
@@ -48,6 +53,8 @@ sequelize.sync({force:true}).then(result => {
     }
     return user;
 }).then(user => {
+    return user.createCart()
+}).then(cart=>{
     console.log('User and Product models are synced with associations.');
     app.listen(7000);
 }).catch(err => console.log(err));

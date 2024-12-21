@@ -1,16 +1,12 @@
+const mongoose=require("mongoose")
 const path=require('path')
 const express=require('express')
 const bodyParser=require('body-parser')
 const adminRoutes=require('./routes/admin')
 const shopRoutes=require('./routes/shop')
 const ErrorController=require('./controllers/404')
-const sequelize =require( './util/database')
-const Product =require('./models/product')
-const User = require('./models/user')
-const Cart = require('./models/cart')
-const CartItem = require('./models/cart-item')
-const Order =require('./models/order')
-const OrderedItems=require('./models/order-items')
+
+const User =require('./models/user')
 const app=express();
 
 // EJS
@@ -21,42 +17,37 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(express.static(path.join(__dirname,'public')))
 
 app.use((req, res, next) => {
-    User.findByPk(1)
+    User.findById('67664bb24ff07ce5966a18f4')
         .then(user => {
-            if (user) {
-                req.user = user;
-            } else {
-                console.error("User not found");
-            }
+            req.user=user
+            
             next();
         })
         .catch(err => console.log(err));
 });
 
+
 app.use('/admin',adminRoutes);
 app.use(shopRoutes);
 app.use(ErrorController.get404)
-Product.belongsTo(User,{constrains:true,onDelete:"CASCADE"})
-User.hasMany(Product);
-User.hasOne(Cart)
-Cart.belongsTo(User)
-Cart.belongsToMany(Product,{through:CartItem})
-Product.belongsToMany(Cart,{through:CartItem})
-Order.belongsTo(User)
-User.hasMany(Order);
-Order.belongsToMany(Product,{through:OrderedItems})
-sequelize.sync().then(result => {
-    return User.findByPk(1);
-}).then(user => {
-    if (!user) {
-        return User.create({ name: 'Jhon', email: 'jhon@gmail.com' });
-    }
-    return user;
-}).then(user => {
-    return user.createCart()
-}).then(cart=>{
-    console.log('User and Product models are synced with associations.');
-    app.listen(7000);
-}).catch(err => console.log(err));
+
+mongoose.connect("mongodb://localhost:27017/shop").then(()=>{
+    User.findOne().then(user=>{
+        if(!user){
+            const user= new User({
+                name:'John',
+                email:"john@gmail.com",
+                cart:{
+                    items:[]
+                }
+            })
+            user.save();
+        }
+    }).catch()
+    
+    console.log('connected siuccessfully')
+    app.listen(7000)
+}).catch(err=>console.log('err',err))
+   
 
 

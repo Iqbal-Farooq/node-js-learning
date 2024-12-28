@@ -46,7 +46,7 @@ exports.getCart = (req, res, next) => {
   req.user
     .populate('cart.items.productId')
     .then(user => {
-      console.log('user.cart.items',user.cart.items)
+      
       const products = user.cart.items;
       res.render('shop/cart', {
         path: '/cart',
@@ -65,7 +65,7 @@ exports.postCart = (req, res, next) => {
       return req.user.addToCart(product);
     })
     .then(result => {
-      console.log(result);
+      
       res.redirect('/cart');
     });
 };

@@ -1,3 +1,4 @@
+// const {  mongoose } = require('mongoose');
 const Product = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {
@@ -11,11 +12,13 @@ exports.getAddProduct = (req, res, next) => {
 };
 
 exports.postAddProduct = (req, res, next) => {
+  
   const title = req.body.title;
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
   const product = new Product({
+    // _id:new mongoose.Types.ObjectId('676ba2147d5c97cc4c2be7ba'),
     title: title,
     price: price,
     description: description,
@@ -30,7 +33,9 @@ exports.postAddProduct = (req, res, next) => {
       res.redirect('/admin/products');
     })
     .catch(err => {
-      console.log(err);
+    const error=new Error(err)
+    error.httpStatusCode=500;
+    return (next(error))
     });
 };
 
@@ -53,7 +58,11 @@ exports.getEditProduct = (req, res, next) => {
         
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error=new Error(err)
+      error.httpStatusCode=500;
+      return (next(error))
+      });
 };
 
 exports.postEditProduct = (req, res, next) => {
@@ -93,7 +102,11 @@ exports.getProducts = (req, res, next) => {
         
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error=new Error(err)
+      error.httpStatusCode=500;
+      return (next(error))
+      });
 };
 
 exports.postDeleteProduct = (req, res, next) => {
@@ -104,5 +117,9 @@ exports.postDeleteProduct = (req, res, next) => {
       // console.log('DESTROYED PRODUCT');
       res.redirect('/admin/products');
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error=new Error(err)
+      error.httpStatusCode=500;
+      return (next(error))
+      });
 };

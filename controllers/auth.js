@@ -29,6 +29,7 @@ exports.getLogin = (req, res, next) => {
       password:''
     },
     validationErrors:[],
+    isLoggedIn:false,
   });
 };
 
@@ -109,6 +110,80 @@ exports.postLogin = (req, res, next) => {
     })
     .catch((err) => console.log(err));
 };
+
+// exports.postLogin = (req, res, next) => {
+//   const email = req.body.email;
+//   const password = req.body.password;
+
+//   // Validate input
+//   const error = validationResult(req);
+//   if (!error.isEmpty()) {
+//     return res.status(422).render("auth/login", {
+//       path: "/login",
+//       pageTitle: "Login",
+//       error: error.array()[0].msg,
+//       oldInput: {
+//         email: email,
+//         password: password,
+//       },
+//       validationErrors: error.array(),
+//     });
+//   }
+
+//   // Check if user exists
+//   User.findOne({ email: email })
+//     .then((user) => {
+//       if (!user) {
+//         return res.status(422).render("auth/login", {
+//           path: "/login",
+//           pageTitle: "Login",
+//           error: "Invalid Email or Password",
+//           oldInput: {
+//             email: email,
+//             password: password,
+//           },
+//           validationErrors: [],
+//         });
+//       }
+
+//       // Compare passwords
+//       bcrypt
+//         .compare(password, user.password)
+//         .then((doMatch) => {
+//           if (doMatch) {
+//             // Set session and redirect
+//             req.session.isLoggedIn = true;
+//             req.session.user = user;
+//             return req.session.save((err) => {
+//               if (err) {
+//                 console.error("Session save error:", err);
+//               }
+//               res.redirect("/");
+//             });
+//           }
+
+//           // Invalid password
+//           return res.status(422).render("auth/login", {
+//             path: "/login",
+//             pageTitle: "Login",
+//             error: "Invalid Email or Password",
+//             oldInput: {
+//               email: email,
+//               password: password,
+//             },
+//             validationErrors: [],
+//           });
+//         })
+//         .catch((err) => {
+//           console.error("Password comparison error:", err);
+//           return next(new Error("Something went wrong. Please try again."));
+//         });
+//     })
+//     .catch((err) => {
+//       console.error("Database query error:", err);
+//       next(new Error("Something went wrong. Please try again."));
+//     });
+// };
 
 exports.postSignup = (req, res, next) => {
   

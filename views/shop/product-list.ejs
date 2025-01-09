@@ -16,7 +16,7 @@
                                     </h1>
                                 </header>
                                 <div class="card__image">
-                                    <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
+                                    <img src="/<%= product.imageUrl %>" alt="<%= product.title %>">
                                 </div>
                                 <div class="card__content">
                                     <h2 class="product__price">$
@@ -34,7 +34,9 @@
                                 </div>
                             </article>
                             <% } %>
+                            
                     </div>
+                    <%- include('../includes/pagination.ejs',{currentPage:currentPage,previousPage:previousPage,nextPage:nextPage,lastPage:lastPage,hasNextpage:hasNextpage,hasPrevious:hasPrevious}) %>
                     <% } else { %>
                         <h1>No Products Found!</h1>
                         <% } %>

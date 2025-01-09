@@ -2,15 +2,12 @@
 const Product = require('../models/product');
 const fileHelper =require('../util/file')
 exports.getAddProduct = (req, res, next) => {
-  
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
     editing: false,
-    
   });
 };
-
 exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
   const imageUrl = req.file;
@@ -20,7 +17,6 @@ exports.postAddProduct = (req, res, next) => {
     throw  new Error("Invalid FILE")
   }
   const product = new Product({
-    // _id:new mongoose.Types.ObjectId('676ba2147d5c97cc4c2be7ba'),
     title: title,
     price: price,
     description: description,
@@ -30,18 +26,14 @@ exports.postAddProduct = (req, res, next) => {
   product
     .save()
     .then(result => {
-      // console.log(result);
-      console.log('Created Product');
       res.redirect('/admin/products');
     })
     .catch(err => {
-      console.log('err ----',err)
     const error=new Error(err)
     error.httpStatusCode=500;
     return (next(error))
     });
 };
-
 exports.getEditProduct = (req, res, next) => {
   const editMode = req.query.edit;
   if (!editMode) {
@@ -58,7 +50,6 @@ exports.getEditProduct = (req, res, next) => {
         path: '/admin/edit-product',
         editing: editMode,
         product: product,
-        
       });
     })
     .catch(err => {
@@ -67,7 +58,6 @@ exports.getEditProduct = (req, res, next) => {
       return (next(error))
       });
 };
-
 exports.postEditProduct = (req, res, next) => {
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
@@ -75,13 +65,11 @@ exports.postEditProduct = (req, res, next) => {
   // const imageUrl=req.body.imageUrl
   const image = req.file;
   const updatedDesc = req.body.description;
-
   Product.findById(prodId)
     .then(product => {
       if(product.userId.toString() != req.user._id.toString()){
         return res.redirect('/')
       }
-
       product.title = updatedTitle;
       product.price = updatedPrice;
       product.description = updatedDesc;
@@ -89,13 +77,10 @@ exports.postEditProduct = (req, res, next) => {
         fileHelper.deleteFile(product.imageUrl)
         product.imageUrl = image.path;
       }
-    
       return product.save().then(result => {
-        console.log('UPDATED PRODUCT!');
         res.redirect('/admin/products');
       })
     })
-    
     .catch(err => console.log(err));
 };
 
@@ -116,9 +101,8 @@ exports.getProducts = (req, res, next) => {
 };
 
 
-exports.postDeleteProduct = (req, res, next) => {
-  const prodId = req.body.productId;
-
+exports.deleteProduct = (req, res, next) => {
+  const prodId = req.params.productId;
   Product.findById({_id: prodId}).then(product => {
     if (!product) {
       return next(new Error("Product Not Found"));
@@ -126,16 +110,17 @@ exports.postDeleteProduct = (req, res, next) => {
     if (product.imageUrl) {
       fileHelper.deleteFile(product.imageUrl);
     }
-
     return Product.deleteOne({_id: prodId, userId: req.user._id});
   })
   .then(() => {
-    res.redirect('/admin/products');
+    res.status(200).json({message:'success'});
+    // res.redirect('/admin/products');
   })
   .catch(err => {
-    const error = new Error(err);
-    error.httpStatusCode = 500;
-    return next(error);
+    res.status(500).json({mesage:"deleting product fail"})
+    // const error = new Error(err);
+    // error.httpStatusCode = 500;
+    // return next(error);
   });
 };
 

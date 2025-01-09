@@ -2,15 +2,7 @@ const Product = require('../models/product');
 const ITEMS_PER_PAGE= 1;
 let totalItems;
 exports.getProducts = (req, res, next) => {
-  // Product.find()
-  //   .then(products => {
-      // res.render('shop/product-list', {
-      //   prods: products,
-      //   pageTitle: 'All Products',
-      //   path: '/products',
-  //     });
-  //   })
-
+  
   const page=+req.query.page || 1;
   Product.find().countDocuments().then(numProducts=>{
     totalItems=numProducts;
@@ -106,7 +98,6 @@ exports.postCart = (req, res, next) => {
       return req.user.addToCart(product);
     })
     .then(result => {
-      
       res.redirect('/cart');
     });
 };
